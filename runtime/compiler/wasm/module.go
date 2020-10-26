@@ -24,8 +24,10 @@ type Module struct {
 	Name      string
 	Types     []*FunctionType
 	Functions []*Function
+	Memories  []*Memory
 	Imports   []*Import
 	Exports   []*Export
+	Data      []*Data
 }
 
 type ModuleBuilder struct {

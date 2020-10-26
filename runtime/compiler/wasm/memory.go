@@ -18,17 +18,19 @@
 
 package wasm
 
-// sectionID is the ID of a section in the WASM binary
+// Memory represents a memory
 //
-type sectionID byte
+type Memory struct {
+	Min uint32
+	Max *uint32
+}
+
+// limitIndicator is the byte used to indicate the kind of limit in the WASM binary
+type limitIndicator byte
 
 const (
-	sectionIDCustom   sectionID = 0
-	sectionIDType     sectionID = 1
-	sectionIDImport   sectionID = 2
-	sectionIDFunction sectionID = 3
-	sectionIDMemory   sectionID = 5
-	sectionIDExport   sectionID = 7
-	sectionIDCode     sectionID = 10
-	sectionIDData     sectionID = 11
+	// limitIndicatorNoMax is the byte used to indicate a limit with no maximum in the WASM binary
+	limitIndicatorNoMax limitIndicator = 0x0
+	// limitIndicatorMax is the byte used to indicate a limit with no maximum in the WASM binary
+	limitIndicatorMax limitIndicator = 0x1
 )

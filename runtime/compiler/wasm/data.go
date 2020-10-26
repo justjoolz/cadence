@@ -18,17 +18,13 @@
 
 package wasm
 
-// sectionID is the ID of a section in the WASM binary
+// Data represents a data segment, which initializes a range of memory,
+// at a given offset, with a static vector of bytes.
 //
-type sectionID byte
-
-const (
-	sectionIDCustom   sectionID = 0
-	sectionIDType     sectionID = 1
-	sectionIDImport   sectionID = 2
-	sectionIDFunction sectionID = 3
-	sectionIDMemory   sectionID = 5
-	sectionIDExport   sectionID = 7
-	sectionIDCode     sectionID = 10
-	sectionIDData     sectionID = 11
-)
+type Data struct {
+	MemoryIndex uint32
+	// must be constant, as defined in the spec
+	// (https://webassembly.github.io/spec/core/valid/instructions.html#constant-expressions)
+	Offset []Instruction
+	Init   []byte
+}
