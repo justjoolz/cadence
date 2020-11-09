@@ -3,6 +3,7 @@ module github.com/onflow/cadence
 go 1.13
 
 require (
+	github.com/bytecodealliance/wasmtime-go v0.21.0
 	github.com/c-bata/go-prompt v0.2.3
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.2.0
@@ -19,7 +20,7 @@ require (
 	go.uber.org/goleak v1.0.0
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5
 	golang.org/x/text v0.3.2
-	golang.org/x/tools v0.0.0-20200323144430-8dcfad9e016e // indirect
+	golang.org/x/tools v0.0.0-20200323144430-8dcfad9e016e
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.5 // indirect
 )
