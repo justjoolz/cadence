@@ -16,41 +16,36 @@
  * limitations under the License.
  */
 
-package cadence
+package common
 
 import (
-	"unicode/utf8"
+	"encoding/json"
+	"testing"
 
-	"github.com/onflow/cadence/runtime/common"
-	"github.com/onflow/cadence/runtime/parser2"
-	"github.com/onflow/cadence/runtime/sema"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func Fuzz(data []byte) int {
+func TestAddressLocation_MarshalJSON(t *testing.T) {
 
-	if !utf8.Valid(data) {
-		return 0
+	t.Parallel()
+
+	loc := AddressLocation{
+		Address: BytesToAddress([]byte{1}),
+		Name:    "A",
 	}
 
-	program, err := parser2.ParseProgram(string(data))
+	actual, err := json.Marshal(loc)
+	require.NoError(t, err)
 
-	if err != nil {
-		return 0
-	}
-
-	checker, err := sema.NewChecker(
-		program,
-		common.StringLocation("test"),
-		sema.WithAccessCheckMode(sema.AccessCheckModeNotSpecifiedUnrestricted),
+	assert.JSONEq(t,
+		`
+        {
+            "Type": "AddressLocation",
+            "Address": "0x1",
+            "Name": "A"
+        }
+        `,
+		string(actual),
 	)
-	if err != nil {
-		return 0
-	}
-
-	err = checker.Check()
-	if err != nil {
-		return 0
-	}
-
-	return 1
 }

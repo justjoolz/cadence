@@ -16,41 +16,38 @@
  * limitations under the License.
  */
 
-package cadence
+package ast
 
 import (
-	"unicode/utf8"
-
-	"github.com/onflow/cadence/runtime/common"
-	"github.com/onflow/cadence/runtime/parser2"
-	"github.com/onflow/cadence/runtime/sema"
+	"encoding/json"
 )
 
-func Fuzz(data []byte) int {
+// Identifier
 
-	if !utf8.Valid(data) {
-		return 0
-	}
+type Identifier struct {
+	Identifier string
+	Pos        Position
+}
 
-	program, err := parser2.ParseProgram(string(data))
+func (i Identifier) String() string {
+	return i.Identifier
+}
 
-	if err != nil {
-		return 0
-	}
+func (i Identifier) StartPosition() Position {
+	return i.Pos
+}
 
-	checker, err := sema.NewChecker(
-		program,
-		common.StringLocation("test"),
-		sema.WithAccessCheckMode(sema.AccessCheckModeNotSpecifiedUnrestricted),
-	)
-	if err != nil {
-		return 0
-	}
+func (i Identifier) EndPosition() Position {
+	length := len(i.Identifier)
+	return i.Pos.Shifted(length - 1)
+}
 
-	err = checker.Check()
-	if err != nil {
-		return 0
-	}
-
-	return 1
+func (i Identifier) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Identifier string
+		Range
+	}{
+		Identifier: i.Identifier,
+		Range:      NewRangeFromPositioned(i),
+	})
 }

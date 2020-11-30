@@ -30,6 +30,7 @@ import (
 	"github.com/onflow/cadence"
 	"github.com/onflow/cadence/encoding/json"
 	"github.com/onflow/cadence/runtime"
+	"github.com/onflow/cadence/runtime/common"
 	"github.com/onflow/cadence/runtime/sema"
 )
 
@@ -1268,7 +1269,7 @@ func convertValueFromScript(t *testing.T, script string) cadence.Value {
 		[]byte(script),
 		nil,
 		&runtime.EmptyRuntimeInterface{},
-		runtime.StringLocation("test"),
+		common.StringLocation("test"),
 	)
 
 	require.NoError(t, err)

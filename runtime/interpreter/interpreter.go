@@ -138,7 +138,7 @@ type StorageKeyHandlerFunc func(
 //
 type InjectedCompositeFieldsHandlerFunc func(
 	inter *Interpreter,
-	location ast.Location,
+	location common.Location,
 	typeID sema.TypeID,
 	compositeKind common.CompositeKind,
 ) map[string]Value
@@ -156,7 +156,7 @@ type ContractValueHandlerFunc func(
 //
 type ImportLocationHandlerFunc func(
 	inter *Interpreter,
-	location ast.Location,
+	location common.Location,
 ) Import
 
 // UUIDHandlerFunc is a function that handles the generation of UUIDs.
@@ -216,8 +216,8 @@ type Interpreter struct {
 	PredefinedValues               map[string]Value
 	activations                    *activations.Activations
 	Globals                        map[string]*Variable
-	allInterpreters                map[ast.LocationID]*Interpreter
-	allCheckers                    map[ast.LocationID]*sema.Checker
+	allInterpreters                map[common.LocationID]*Interpreter
+	allCheckers                    map[common.LocationID]*sema.Checker
 	typeCodes                      TypeCodes
 	Transactions                   []*HostFunctionValue
 	onEventEmitted                 OnEventEmittedFunc
@@ -377,7 +377,7 @@ func WithUUIDHandler(handler UUIDHandlerFunc) Option {
 // WithAllInterpreters returns an interpreter option which sets
 // the given map of interpreters as the map of all interpreters.
 //
-func WithAllInterpreters(allInterpreters map[ast.LocationID]*Interpreter) Option {
+func WithAllInterpreters(allInterpreters map[common.LocationID]*Interpreter) Option {
 	return func(interpreter *Interpreter) error {
 		interpreter.SetAllInterpreters(allInterpreters)
 		return nil
@@ -387,7 +387,7 @@ func WithAllInterpreters(allInterpreters map[ast.LocationID]*Interpreter) Option
 // WithAllCheckers returns an interpreter option which sets
 // the given map of checkers as the map of all checkers.
 //
-func WithAllCheckers(allCheckers map[ast.LocationID]*sema.Checker) Option {
+func WithAllCheckers(allCheckers map[common.LocationID]*sema.Checker) Option {
 	return func(interpreter *Interpreter) error {
 		interpreter.SetAllCheckers(allCheckers)
 		return nil
@@ -411,8 +411,8 @@ func NewInterpreter(checker *sema.Checker, options ...Option) (*Interpreter, err
 	}
 
 	defaultOptions := []Option{
-		WithAllInterpreters(map[ast.LocationID]*Interpreter{}),
-		WithAllCheckers(map[ast.LocationID]*sema.Checker{}),
+		WithAllInterpreters(map[common.LocationID]*Interpreter{}),
+		WithAllCheckers(map[common.LocationID]*sema.Checker{}),
 		withTypeCodes(TypeCodes{
 			CompositeCodes:       map[sema.TypeID]CompositeTypeCode{},
 			InterfaceCodes:       map[sema.TypeID]WrapperCode{},
@@ -507,7 +507,7 @@ func (interpreter *Interpreter) SetUUIDHandler(function UUIDHandlerFunc) {
 
 // SetAllInterpreters sets the given map of interpreters as the map of all interpreters.
 //
-func (interpreter *Interpreter) SetAllInterpreters(allInterpreters map[ast.LocationID]*Interpreter) {
+func (interpreter *Interpreter) SetAllInterpreters(allInterpreters map[common.LocationID]*Interpreter) {
 	interpreter.allInterpreters = allInterpreters
 
 	// Register self
@@ -516,7 +516,7 @@ func (interpreter *Interpreter) SetAllInterpreters(allInterpreters map[ast.Locat
 
 // SetAllCheckers sets the given map of checkers as the map of all checkers.
 //
-func (interpreter *Interpreter) SetAllCheckers(allCheckers map[ast.LocationID]*sema.Checker) {
+func (interpreter *Interpreter) SetAllCheckers(allCheckers map[common.LocationID]*sema.Checker) {
 	interpreter.allCheckers = allCheckers
 
 	// Register self
@@ -3236,7 +3236,7 @@ func (interpreter *Interpreter) functionConditionsWrapper(
 }
 
 func (interpreter *Interpreter) ensureLoaded(
-	location ast.Location,
+	location common.Location,
 	loadLocation func() Import,
 ) (subInterpreter *Interpreter) {
 
@@ -4401,16 +4401,16 @@ func (interpreter *Interpreter) getCapabilityFinalTargetStorageKey(
 func (interpreter *Interpreter) ConvertStaticToSemaType(staticType StaticType) sema.Type {
 	return ConvertStaticToSemaType(
 		staticType,
-		func(location ast.Location, typeID sema.TypeID) *sema.InterfaceType {
+		func(location common.Location, typeID sema.TypeID) *sema.InterfaceType {
 			return interpreter.getInterfaceType(location, typeID)
 		},
-		func(location ast.Location, typeID sema.TypeID) *sema.CompositeType {
+		func(location common.Location, typeID sema.TypeID) *sema.CompositeType {
 			return interpreter.getCompositeType(location, typeID)
 		},
 	)
 }
 
-func (interpreter *Interpreter) getElaboration(location ast.Location) *sema.Elaboration {
+func (interpreter *Interpreter) getElaboration(location common.Location) *sema.Elaboration {
 
 	// Ensure the program for this location is loaded,
 	// so its checker is available
@@ -4431,12 +4431,12 @@ func (interpreter *Interpreter) getElaboration(location ast.Location) *sema.Elab
 	return checker.Elaboration
 }
 
-func (interpreter *Interpreter) getCompositeType(location ast.Location, typeID sema.TypeID) *sema.CompositeType {
+func (interpreter *Interpreter) getCompositeType(location common.Location, typeID sema.TypeID) *sema.CompositeType {
 	elaboration := interpreter.getElaboration(location)
 	return elaboration.CompositeTypes[typeID]
 }
 
-func (interpreter *Interpreter) getInterfaceType(location ast.Location, typeID sema.TypeID) *sema.InterfaceType {
+func (interpreter *Interpreter) getInterfaceType(location common.Location, typeID sema.TypeID) *sema.InterfaceType {
 	elaboration := interpreter.getElaboration(location)
 	return elaboration.InterfaceTypes[typeID]
 }

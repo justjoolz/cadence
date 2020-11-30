@@ -16,41 +16,39 @@
  * limitations under the License.
  */
 
-package cadence
+package common
 
 import (
-	"unicode/utf8"
-
-	"github.com/onflow/cadence/runtime/common"
-	"github.com/onflow/cadence/runtime/parser2"
-	"github.com/onflow/cadence/runtime/sema"
+	"strings"
 )
 
-func Fuzz(data []byte) int {
+const REPLLocationPrefix = "REPL"
 
-	if !utf8.Valid(data) {
-		return 0
-	}
+// REPLLocation
+//
+type REPLLocation struct{}
 
-	program, err := parser2.ParseProgram(string(data))
+func (l REPLLocation) ID() LocationID {
+	return REPLLocationPrefix
+}
 
-	if err != nil {
-		return 0
-	}
-
-	checker, err := sema.NewChecker(
-		program,
-		common.StringLocation("test"),
-		sema.WithAccessCheckMode(sema.AccessCheckModeNotSpecifiedUnrestricted),
+func (l REPLLocation) TypeID(qualifiedIdentifier string) TypeID {
+	return NewTypeID(
+		REPLLocationPrefix,
+		qualifiedIdentifier,
 	)
-	if err != nil {
-		return 0
+}
+
+func (l REPLLocation) QualifiedIdentifier(typeID TypeID) string {
+	pieces := strings.SplitN(string(typeID), ".", 2)
+
+	if len(pieces) < 2 {
+		return ""
 	}
 
-	err = checker.Check()
-	if err != nil {
-		return 0
-	}
+	return pieces[1]
+}
 
-	return 1
+func (l REPLLocation) String() string {
+	return REPLLocationPrefix
 }
