@@ -561,8 +561,6 @@ func TestRuntimeTransactionWithAccount(t *testing.T) {
 
 func TestRuntimeTransactionWithArguments(t *testing.T) {
 
-	t.Skip()
-
 	t.Parallel()
 
 	var tests = []struct {
@@ -769,8 +767,8 @@ func TestRuntimeTransactionWithArguments(t *testing.T) {
 					cadence.
 						NewStruct([]cadence.Value{cadence.NewString("bar")}).
 						WithType(&cadence.StructType{
-							TypeID:     "S.test.Foo",
-							Identifier: "Foo",
+							Location:            utils.TestLocation,
+							QualifiedIdentifier: "Foo",
 							Fields: []cadence.Field{
 								{
 									Identifier: "y",
@@ -806,8 +804,8 @@ func TestRuntimeTransactionWithArguments(t *testing.T) {
 						cadence.
 							NewStruct([]cadence.Value{cadence.NewString("bar")}).
 							WithType(&cadence.StructType{
-								TypeID:     "S.test.Foo",
-								Identifier: "Foo",
+								Location:            utils.TestLocation,
+								QualifiedIdentifier: "Foo",
 								Fields: []cadence.Field{
 									{
 										Identifier: "y",
@@ -860,8 +858,6 @@ func TestRuntimeTransactionWithArguments(t *testing.T) {
 }
 
 func TestRuntimeScriptArguments(t *testing.T) {
-
-	t.Skip()
 
 	t.Parallel()
 
@@ -1044,8 +1040,8 @@ func TestRuntimeScriptArguments(t *testing.T) {
 					cadence.
 						NewStruct([]cadence.Value{cadence.NewString("bar")}).
 						WithType(&cadence.StructType{
-							TypeID:     "S.test.Foo",
-							Identifier: "Foo",
+							Location:            utils.TestLocation,
+							QualifiedIdentifier: "Foo",
 							Fields: []cadence.Field{
 								{
 									Identifier: "y",
@@ -1079,8 +1075,8 @@ func TestRuntimeScriptArguments(t *testing.T) {
 						cadence.
 							NewStruct([]cadence.Value{cadence.NewString("bar")}).
 							WithType(&cadence.StructType{
-								TypeID:     "S.test.Foo",
-								Identifier: "Foo",
+								Location:            utils.TestLocation,
+								QualifiedIdentifier: "Foo",
 								Fields: []cadence.Field{
 									{
 										Identifier: "y",

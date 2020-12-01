@@ -137,8 +137,11 @@ func TestRuntimeHighLevelStorage(t *testing.T) {
 	assert.NotNil(t, accountCode)
 
 	rType := &cadence.ResourceType{
-		TypeID:     "A.000000000000cade.Test.R",
-		Identifier: "R",
+		Location: common.AddressLocation{
+			Address: common.BytesToAddress([]byte{0xca, 0xde}),
+			Name:    "Test",
+		},
+		QualifiedIdentifier: "Test.R",
 		Fields: []cadence.Field{
 			{
 				Identifier: "uuid",
@@ -157,10 +160,13 @@ func TestRuntimeHighLevelStorage(t *testing.T) {
 				address,
 				"contract\x1fTest",
 				cadence.NewContract([]cadence.Value{}).WithType(&cadence.ContractType{
-					TypeID:       "A.000000000000cade.Test",
-					Identifier:   "Test",
-					Fields:       []cadence.Field{},
-					Initializers: nil,
+					Location: common.AddressLocation{
+						Address: common.BytesToAddress([]byte{0xca, 0xde}),
+						Name:    "Test",
+					},
+					QualifiedIdentifier: "Test",
+					Fields:              []cadence.Field{},
+					Initializers:        nil,
 				}),
 			},
 		},
